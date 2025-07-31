@@ -1,0 +1,6 @@
+{
+  "entity.fgfmsummer.peter_griffin": "Peter Griffin",
+  "death.attack.petered": "%1$s was petered",
+  "death.attack.petered.item": "%1$s was petered by %2$s using %3$s",
+  "death.attack.petered.player": "%1$s was petered whilst trying to escape %2$s"
+}
