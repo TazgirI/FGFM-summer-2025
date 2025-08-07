@@ -1,0 +1,47 @@
+{
+  "petergriffinstopit": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:petergriffin_stopit",
+        "stream": true
+      }
+    ]
+  },
+  "hiimpeter": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:hi_im_peter",
+        "stream": true
+      }
+    ]
+  },
+  "howthegunworks": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:how_the_gun_works",
+        "stream": true
+      }
+    ]
+  },
+  "imgonnathrowyou": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:im_gonna_throw_you",
+        "stream": true
+      }
+    ]
+  },
+  "whynohole": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:why_no_hole",
+        "stream": true
+      }
+    ]
+  }
+}

@@ -1,7 +1,10 @@
 package net.tazgirl.fgfmsummer;
 
 import net.minecraft.world.entity.Entity;
+import net.tazgirl.fgfmsummer.dirty.packets.PacketEvents;
+import net.tazgirl.fgfmsummer.init.DataAttachments;
 import net.tazgirl.fgfmsummer.init.Entities;
+import net.tazgirl.fgfmsummer.init.Sounds;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -22,7 +25,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -83,6 +85,8 @@ public class FGFMSummer
         CREATIVE_MODE_TABS.register(modEventBus);
 
         Entities.REGISTRY.register(modEventBus);
+        Sounds.REGISTRY.register(modEventBus);
+        DataAttachments.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
@@ -92,23 +96,13 @@ public class FGFMSummer
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
 
-        if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
-            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-        }
-
-        LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
-
-        Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
-
-        Entity entity;
     }
 
     // Add the example block item to the building blocks tab

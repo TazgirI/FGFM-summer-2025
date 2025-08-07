@@ -1,12 +1,13 @@
 
 package net.tazgirl.fgfmsummer.entity;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.SpawnData;
-import net.tazgirl.fgfmsummer.PeterFunctions;
-import net.tazgirl.fgfmsummer.client.renderer.PeterGriffinRenderer;
+import net.tazgirl.fgfmsummer.peter_fight.PeterFunctions;
 import net.tazgirl.fgfmsummer.init.Entities;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -22,13 +23,7 @@ import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.damagesource.DamageSource;
@@ -55,6 +50,10 @@ public class PeterGriffin extends Monster implements GeoEntity {
     private boolean lastloop;
     private long lastSwing;
     public String animationprocedure = "empty";
+
+    public final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.GREEN, ServerBossEvent.BossBarOverlay.PROGRESS);
+
+
 
     public PeterGriffin(EntityType<PeterGriffin> type, Level world) {
         super(type, world);
@@ -105,6 +104,20 @@ public class PeterGriffin extends Monster implements GeoEntity {
     {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 
+        bossInfo.setVisible(true);
+
+        for(ServerPlayer player:this.getServer().getPlayerList().getPlayers())
+        {
+            bossInfo.addPlayer(player);
+        }
+
+        this.setCustomName(Component.literal("Peter Griffin"));
+
+        PeterFunctions.ClearVariables();
+
+        PeterFunctions.peter = this;
+
+
         return result;
     }
 
@@ -149,7 +162,12 @@ public class PeterGriffin extends Monster implements GeoEntity {
     @Override
     public void baseTick() {
         super.baseTick();
+
+        this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
+
         PeterFunctions.PeterTick(this);
+
+
         this.refreshDimensions();
     }
 
@@ -167,8 +185,8 @@ public class PeterGriffin extends Monster implements GeoEntity {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
-        builder = builder.add(Attributes.MAX_HEALTH, 10);
-        builder = builder.add(Attributes.ARMOR, 0);
+        builder = builder.add(Attributes.MAX_HEALTH, 600);
+        builder = builder.add(Attributes.ARMOR, 1);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 3);
         builder = builder.add(Attributes.FOLLOW_RANGE, 16);
         builder = builder.add(Attributes.STEP_HEIGHT, 0.6);
@@ -221,6 +239,11 @@ public class PeterGriffin extends Monster implements GeoEntity {
 
     public void setAnimation(String animation) {
         this.entityData.set(ANIMATION, animation);
+    }
+
+    public String getPlayingAnimation()
+    {
+        return "";
     }
 
     @Override
