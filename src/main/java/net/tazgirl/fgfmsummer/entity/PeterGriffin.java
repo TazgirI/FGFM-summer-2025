@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.tazgirl.fgfmsummer.peter_fight.PeterFunctions;
 import net.tazgirl.fgfmsummer.init.Entities;
@@ -84,7 +85,14 @@ public class PeterGriffin extends Monster implements GeoEntity {
 
     @Override
     public boolean canCollideWith(Entity entity) {
-        return true;
+        if(entity instanceof Player)
+        {
+            return true;
+        }
+        else
+        {
+            return super.canCollideWith(entity);
+        }
     }
 
     @Override
@@ -185,7 +193,7 @@ public class PeterGriffin extends Monster implements GeoEntity {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
-        builder = builder.add(Attributes.MAX_HEALTH, 600);
+        builder = builder.add(Attributes.MAX_HEALTH, 1200);
         builder = builder.add(Attributes.ARMOR, 1);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 3);
         builder = builder.add(Attributes.FOLLOW_RANGE, 16);

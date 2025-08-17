@@ -4,12 +4,19 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.tazgirl.fgfmsummer.FGFMSummer;
 import net.tazgirl.fgfmsummer.dirty.InventoryLoader;
 import net.tazgirl.fgfmsummer.dirty.InventorySaver;
+import net.tazgirl.fgfmsummer.entity.BombEntity;
+
+import java.util.Random;
 
 @EventBusSubscriber(modid = FGFMSummer.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class PeterFightCommands
@@ -25,18 +32,6 @@ public class PeterFightCommands
                 .executes(context ->
                 {
                     PeterFunctions.Setup(context.getSource().getServer());
-                    return 1;
-                })
-        );
-        dispatcher.register(Commands.literal("saveInventoryAsArenaSet")
-                .requires(source -> source.hasPermission(4))
-                .executes(context ->
-                {
-                    if(context.getSource().getEntity() instanceof ServerPlayer serverPlayer)
-                    {
-                        InventorySaver.savePlayerInventory(serverPlayer, "arena_set");
-                    }
-
                     return 1;
                 })
         );
@@ -70,6 +65,29 @@ public class PeterFightCommands
                     return 1;
                 })
         );
+        dispatcher.register(Commands.literal("PeterFightBombTest")
+                .requires(source -> source.hasPermission(4))
+                .executes(context ->
+                {
+                    BombEntity bomb = new BombEntity(EntityType.TNT_MINECART, context.getSource().getLevel());
+                    bomb.setPos(context.getSource().getPosition());
+                    context.getSource().getLevel().addFreshEntity(bomb);
+
+                    return 1;
+                })
+        );
+        dispatcher.register(Commands.literal("PeterFightTestItemDrop")
+                .requires(source -> source.hasPermission(4))
+                .executes(context ->
+                {
+                    PeterFunctions.DropItem();
+
+
+                    return 1;
+                })
+        );
+
+
 
     }
 }

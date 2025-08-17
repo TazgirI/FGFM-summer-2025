@@ -25,4 +25,15 @@ public class PeterArrow extends Arrow
         }
 
     }
+
+    @Override
+    public void baseTick()
+    {
+        super.baseTick();
+
+        if(super.inGround)
+        {
+            this.discard();
+        }
+    }
 }

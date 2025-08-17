@@ -43,5 +43,96 @@
         "stream": true
       }
     ]
+  },
+  "kicksmash": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:kick_smash",
+        "stream": true
+      }
+    ]
+  },
+  "roadhouse": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:roadhouse",
+        "stream": true
+      }
+    ]
+  },
+  "laugh": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:peter_laugh_one",
+        "stream": true
+      },
+      {
+        "name": "fgfmsummer:peter_laugh_two",
+        "stream": true
+      },
+      {
+        "name": "fgfmsummer:peter_laugh_three",
+        "stream": true
+      },
+      {
+        "name": "fgfmsummer:peter_laugh_four",
+        "stream": true
+      }
+
+    ]
+  },
+  "summertime": {
+  "subtitle": "",
+  "sounds": [
+    {
+      "name": "fgfmsummer:summertime_real",
+      "stream": true,
+      "weight": 2
+    },
+    {
+      "name": "fgfmsummer:summertime_min1bin",
+      "stream": true,
+      "weight": 1
+    }
+  ]
+  },
+  "redstool": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:red_stool",
+        "stream": true
+      }
+    ]
+  },
+  "ontheceiling": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:ceiling",
+        "stream": true
+      }
+    ]
+  },
+  "thanos": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "fgfmsummer:thanos_got_stone",
+        "stream": true
+      }
+    ]
+  },
+  "chestsound": {
+    "subtitle": "",
+    "sounds": [
+      {
+        "name": "minecraft:block.chest.open",
+        "stream": true
+      }
+    ]
   }
 }

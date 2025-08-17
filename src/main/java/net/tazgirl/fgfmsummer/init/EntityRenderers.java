@@ -3,11 +3,13 @@ package net.tazgirl.fgfmsummer.init;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.entity.TippableArrowRenderer;
+import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
+import net.tazgirl.fgfmsummer.client.renderer.BombRenderer;
 import net.tazgirl.fgfmsummer.client.renderer.BulletRenderer;
 import net.tazgirl.fgfmsummer.client.renderer.PeterGriffinRenderer;
 import net.tazgirl.fgfmsummer.entity.model.BulletModel;
@@ -19,6 +21,7 @@ public class EntityRenderers {
         event.registerEntityRenderer(Entities.PETER_GRIFFIN.get(), PeterGriffinRenderer::new);
         event.registerEntityRenderer(Entities.INVINCIBLE_ITEM_FRAME.get(), ItemFrameRenderer::new);
         event.registerEntityRenderer(Entities.PETER_ARROW.get(), BulletRenderer::new);
+        event.registerEntityRenderer(Entities.FALLING_BOMB.get(), BombRenderer::new);
     }
 
     @SubscribeEvent

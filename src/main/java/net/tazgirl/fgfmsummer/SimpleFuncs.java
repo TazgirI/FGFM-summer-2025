@@ -1,12 +1,19 @@
 package net.tazgirl.fgfmsummer;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.ScoreAccess;
 import net.minecraft.world.scores.ScoreHolder;
@@ -15,6 +22,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.tazgirl.fgfmsummer.init.DataAttachments;
+import net.tazgirl.fgfmsummer.sky_jumpers.SkyJumpersConstants;
+import net.tazgirl.fgfmsummer.sky_jumpers.SkyJumpersFunctions;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -42,6 +52,11 @@ public class SimpleFuncs
         }
     }
 
+    public static void sendMessageToOnePlayer(ServerPlayer player, Component message)
+    {
+        player.sendSystemMessage(message);
+    }
+
     public static void queueServerWork(int tick, Runnable action) {
         if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
             workQueue.add(new Tuple<>(action, tick));
@@ -62,8 +77,13 @@ public class SimpleFuncs
 
     public static void ReallySendPlayer(ServerPlayer player,Vec3 newPos)
     {
+        newPos = new Vec3(newPos.x + 1e-6, newPos.y, newPos.z);
+        EnumSet<RelativeMovement> relative = EnumSet.noneOf(RelativeMovement.class);
+
+
         player.setPos(newPos);
-        player.connection.send(new ClientboundPlayerPositionPacket(newPos.x, newPos.y, newPos.z, player.getYRot(), player.getXRot(), EnumSet.noneOf(RelativeMovement.class), 0));
+        player.teleportTo(newPos.x, newPos.y, newPos.z);
+        player.connection.send(new ClientboundPlayerPositionPacket(newPos.x, newPos.y, newPos.z, 0, 0, RelativeMovement.ROTATION, 0));
     }
 
     public static void ResetObjective(MinecraftServer server, String objectiveName)
@@ -98,6 +118,93 @@ public class SimpleFuncs
 
         return listToReturn;
 
+    }
+
+    public static void PlaySound(String soundName, ServerLevel level, Entity soundSource)
+    {
+        level.playSound(null, soundSource.position().x, soundSource.position().y, soundSource.position().z, SoundEvent.createFixedRangeEvent(ResourceLocation.parse(soundName),200), SoundSource.RECORDS, 1.0f, 1.0f);
+    }
+
+    public static void PlaySound(String soundName, ServerLevel level, Entity soundSource, float volume)
+    {
+        level.playSound(null, soundSource.position().x, soundSource.position().y, soundSource.position().z, SoundEvent.createFixedRangeEvent(ResourceLocation.parse(soundName),200), SoundSource.RECORDS, volume, 1.0f);
+    }
+
+    public static void SendSubtitleToAll(Component message, MinecraftServer server)
+    {
+        for(ServerPlayer player: server.getPlayerList().getPlayers())
+        {
+//            player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 60, 10));
+//            player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(" ")));
+            player.connection.send(new ClientboundSetActionBarTextPacket(message));
+        }
+    }
+
+    public static void SendSubtitleToOne(Component message, ServerPlayer player)
+    {
+            player.connection.send(new ClientboundSetActionBarTextPacket(message));
+    }
+
+    public static boolean IsPlayerUnderdog(ServerPlayer player)
+    {
+        return player.getData(DataAttachments.DOGS.get()).underdog();
+    }
+
+    public static boolean IsPlayerHandidog(ServerPlayer player)
+    {
+        return player.getData(DataAttachments.DOGS.get()).handidog();
+    }
+
+    public static void RemoveAllLocks()
+    {
+        SkyJumpersFunctions.lockInPlace = false;
+        for(ServerPlayer player: GlobalConstants.thisServer.getPlayerList().getPlayers())
+        {
+            player.removeData(DataAttachments.LOCK_POSTION.get());
+        }
+    }
+
+    public static boolean IsBlockBelowCenter(ServerPlayer player, Block blockToCompare)
+    {
+        Vec3 checkPos = new Vec3(player.position().x, player.getBoundingBox().minY - 0.125, player.position().z);
+        Vec3 checkPos2 = new Vec3(player.position().x + 0.15, player.getBoundingBox().minY - 0.125, player.position().z + 0.15);
+        Vec3 checkPos3 = new Vec3(player.position().x - 0.15, player.getBoundingBox().minY - 0.125, player.position().z + 0.15);
+        Vec3 checkPos4 = new Vec3(player.position().x + 0.15, player.getBoundingBox().minY - 0.125, player.position().z - 0.15);
+        Vec3 checkPos5 = new Vec3(player.position().x - 0.15, player.getBoundingBox().minY - 0.125, player.position().z - 0.15);
+        
+        
+        if ( player.level().getBlockState(BlockPos.containing(checkPos)).getBlock() == blockToCompare){return true;}
+
+        if ( player.level().getBlockState(BlockPos.containing(checkPos2)).getBlock() == blockToCompare){return true;}
+
+        if ( player.level().getBlockState(BlockPos.containing(checkPos3)).getBlock() == blockToCompare){return true;}
+
+        if ( player.level().getBlockState(BlockPos.containing(checkPos4)).getBlock() == blockToCompare){return true;}
+
+        if ( player.level().getBlockState(BlockPos.containing(checkPos5)).getBlock() == blockToCompare){return true;}
+        
+        
+        return false;
+    }
+
+    public static boolean IsAirDirectlyBelow(ServerPlayer player)
+    {
+        Vec3 checkPos = new Vec3(player.position().x, player.getBoundingBox().minY - 0.025, player.position().z);
+
+        return player.level().isEmptyBlock(BlockPos.containing(checkPos));
+    }
+
+    public static boolean IsPlayerBlueTeam(ServerPlayer player)
+    {
+        return player.getData(DataAttachments.TEAMS.get()).blueTeam();
+    }
+
+    public static void ClearAllInventories()
+    {
+        for(ServerPlayer player: GlobalConstants.thisServer.getPlayerList().getPlayers())
+        {
+            player.getInventory().clearContent();
+        }
     }
 
 

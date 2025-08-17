@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class DropItemsFromList
 {
-    public static void DropItems(ServerPlayer player, List<String> itemIdsToDrop, List<String> itemIdsToDestroy)
+    public static void DropItems(ServerPlayer player, List<String> itemIdsToNotDrop, List<String> itemIdsToDestroy, double velocityDamper)
     {
         Level level = player.level();
         List<ItemStack> inventory = player.getInventory().items;
@@ -26,7 +26,7 @@ public class DropItemsFromList
                 ResourceLocation stackId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
                 // Check if this item matches any ID in the list
-                if (itemIdsToDrop.contains(stackId.toString())) {
+                if (!itemIdsToNotDrop.contains(stackId.toString())) {
                     // Copy stack for drop
                     ItemStack dropStack = stack.copy();
 
@@ -42,7 +42,7 @@ public class DropItemsFromList
                     droppedItem.setPickUpDelay(20);
                     droppedItem.setGlowingTag(true);
 
-                    droppedItem.setDeltaMovement(new Vec3(random.nextDouble(-1,1),random.nextDouble(1),random.nextDouble(-1,1)));
+                    droppedItem.setDeltaMovement(new Vec3(random.nextDouble(-1,1) * velocityDamper,random.nextDouble(1) * velocityDamper,random.nextDouble(-1,1) * velocityDamper));
                     level.addFreshEntity(droppedItem);
                 }
                 else if(itemIdsToDestroy.contains(stackId.toString()))
